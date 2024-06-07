@@ -34,7 +34,8 @@ programa {
   escreva("QUAL VOCÊ DESEJA JOGAR: ")
   leia(jogada)
   encontra_pontuacao_da_carta(jogador1)
-  verifica_jogada_1(jogador1)
+  verifica_jogada(jogador1, verdadeiro)
+  escreva("\n", carta_escolhida_1)
 
   // Exemplo jogador 2
   escreva("\n\nVEJA SUAS CARTAS: JOGADOR 2\n")
@@ -43,10 +44,12 @@ programa {
   escreva("QUAL VOCÊ DESEJA JOGAR: ")
   leia(jogada)
   encontra_pontuacao_da_carta(jogador2)
-  verifica_jogada_2(jogador2)
+  verifica_jogada(jogador2, falso)
+  escreva("\n", carta_escolhida_2)
 
   // RESULTADO
   vitoria_da_mao()
+
   
   }
   funcao cadeia entrega_tres_cartas(cadeia vetor[]){
@@ -100,38 +103,32 @@ programa {
     retorne jogador
   }
 
-  funcao verifica_jogada_1(cadeia jogador[]){
+  funcao verifica_jogada(cadeia jogador[], logico carta_escolhida){
     se(jogada == 1){
       escreva(jogador[0], " --> ", pontuacao_das_cartas[acha_posicao], " PONTOS")
-      carta_escolhida_1 = pontuacao_das_cartas[acha_posicao]
+       se(carta_escolhida){
+        carta_escolhida_1 = pontuacao_das_cartas[acha_posicao]
+      }senao{
+        carta_escolhida_2 = pontuacao_das_cartas[acha_posicao]
+      }
       jogador[0] = " "
     }
     se(jogada == 2){
       escreva(jogador[1], " --> ", pontuacao_das_cartas[acha_posicao], " PONTOS")
-      carta_escolhida_1 = pontuacao_das_cartas[acha_posicao]
+       se(carta_escolhida){
+        carta_escolhida_1 = pontuacao_das_cartas[acha_posicao]
+      }senao{
+        carta_escolhida_2 = pontuacao_das_cartas[acha_posicao]
+      }
       jogador[1] = " "
     }
     se(jogada == 3){
       escreva(jogador[2], " --> ", pontuacao_das_cartas[acha_posicao], " PONTOS")
-      carta_escolhida_1 = pontuacao_das_cartas[acha_posicao]
-      jogador[2] = " "
-    }
-  }
-
-  funcao verifica_jogada_2(cadeia jogador[]){
-    se(jogada == 1){
-      escreva(jogador[0], " --> ", pontuacao_das_cartas[acha_posicao], " PONTOS")
-      carta_escolhida_2 = pontuacao_das_cartas[acha_posicao]
-      jogador[0] = " "
-    }
-    se(jogada == 2){
-      escreva(jogador[1], " --> ", pontuacao_das_cartas[acha_posicao], " PONTOS")
-      carta_escolhida_2 = pontuacao_das_cartas[acha_posicao]
-      jogador[1] = " "
-    }
-    se(jogada == 3){
-      escreva(jogador[2], " --> ", pontuacao_das_cartas[acha_posicao], " PONTOS")
-      carta_escolhida_2 = pontuacao_das_cartas[acha_posicao]
+       se(carta_escolhida){
+        carta_escolhida_1 = pontuacao_das_cartas[acha_posicao]
+      }senao{
+        carta_escolhida_2 = pontuacao_das_cartas[acha_posicao]
+      }
       jogador[2] = " "
     }
   }
