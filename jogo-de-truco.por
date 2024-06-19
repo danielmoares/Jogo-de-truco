@@ -1,5 +1,5 @@
 programa {
-inclua biblioteca Util --> u
+  inclua biblioteca Util --> u
 
 inteiro contador = 0
 cadeia jogador1[3]
@@ -18,10 +18,10 @@ inteiro carta_escolhida_2 = 0
 logico uso_da_carta[40]
 
 cadeia nome_de_cartas[40] = {
-  "1 DE PAUS", "2 DE PAUS", "3 DE PAUS", "4 DE PAUS", "5 DE PAUS", "6 DE PAUS", "7 DE PAUS", "10 DE PAUS", "11 DE PAUS", "12 DE PAUS",
-  "1 DE OURO", "2 DE OURO", "3 DE OURO", "4 DE OURO", "5 DE OURO", "6 DE OURO", "7 DE OURO", "10 DE OURO", "11 DE OURO", "12 DE OURO",
-  "1 DE ESPADA", "2 DE ESPADA", "3 DE ESPADA", "4 DE ESPADA", "5 DE ESPADA", "6 DE ESPADA", "7 DE ESPADA", "10 DE ESPADA", "11 DE ESPADA", "12 DE ESPADA",
-  "1 DE COPAS", "2 DE COPAS", "3 DE COPAS", "4 DE COPAS", "5 DE COPAS", "6 DE COPAS", "7 DE COPAS", "10 DE COPAS", "11 DE COPAS", "12 DE COPAS"}
+  "1 DE PAUS  ", "2 DE PAUS  ", "3 DE PAUS  ", "4 DE PAUS  ", "5 DE PAUS  ", "6 DE PAUS  ", "7 DE PAUS  ", "10 DE PAUS  ", "11 DE PAUS  ", "12 DE PAUS  ",
+  "1 DE OURO  ", "2 DE OURO  ", "3 DE OURO  ", "4 DE OURO  ", "5 DE OURO  ", "6 DE OURO  ", "7 DE OURO  ", "10 DE OURO  ", "11 DE OURO  ", "12 DE OURO  ",
+  "1 DE ESPADA ", "2 DE ESPADA  ", "3 DE ESPADA  ", "4 DE ESPADA  ", "5 DE ESPADA  ", "6 DE ESPADA  ", "7 DE ESPADA  ", "10 DE ESPADA  ", "11 DE ESPADA  ", "12 DE ESPADA  ",
+  "1 DE COPAS  ", "2 DE COPAS  ", "3 DE COPAS  ", "4 DE COPAS  ", "5 DE COPAS  ", "6 DE COPAS  ", "7 DE COPAS  ", "10 DE COPAS  ", "11 DE COPAS  ", "12 DE COPAS  "}
 
 inteiro pontuacao_das_cartas[40] = {
   39, 36, 37, 28, 29, 30, 31, 32, 33, 34,
@@ -31,13 +31,21 @@ inteiro pontuacao_das_cartas[40] = {
 
 inteiro pontos_jogador1 = 0
 inteiro pontos_jogador2 = 0
+cadeia vencedor_anterior = ""
+
+// adicionei o menu de iniciar ou nao o programa dentro do loop para,
 
 funcao inicio() {
-  escreva("::::::::: MENU :::::::::\n")
-  escreva("olá\n","seja bem vindo ao nosso jogo\n", "deseja iniciar o jogo?\n")
-  leia(opcao)
+    
+  para (inteiro opcao= 1;opcao<=3;opcao++){
 
-  se(opcao == "sim" ou opcao=="s"){
+  escreva("\n\n::::::::: MENU :::::::::\n")
+  escreva("\nolá\n","seja bem vindo ao nosso jogo\n")
+  escreva("Opção 1(iniciar) Opção 2(encerrar):")
+  leia(opcao)
+  
+
+  se(opcao == "1"){
     escreva("digite o primeiro jogador\n")
     leia(jogador1menu)
     escreva("digite o segundo jogador\n")
@@ -47,27 +55,19 @@ funcao inicio() {
     entrega_tres_cartas(jogador1)
     entrega_tres_cartas(jogador2)
     
+    vencedor_anterior = jogador1menu // Iniciar com o jogador 1
 
     para(inteiro rodada = 1; rodada <= 3; rodada++) {
       escreva("\n\n:::: RODADA ", rodada, " :::::\n")
 
-      // Jogador 1
-      escreva("VEJA SUAS CARTAS: JOGADOR 1\n","\n JOGADOR 1:\n", jogador1menu, "\n")
-      
-      mostra_carta_para_jogadores(jogador1)
-      escreva("QUAL VOCÊ DESEJA JOGAR: ")
-      leia(jogada)
-      encontra_pontuacao_da_carta(jogador1)
-      verifica_jogada_1(jogador1)
-
-      // Jogador 2
-      escreva("\n\nVEJA SUAS CARTAS: JOGADOR 2\n","\n JOGADOR 2:\n", jogador2menu, "\n")
-      
-      mostra_carta_para_jogadores(jogador2)
-      escreva("QUAL VOCÊ DESEJA JOGAR: ")
-      leia(jogada)
-      encontra_pontuacao_da_carta(jogador2)
-      verifica_jogada_2(jogador2)
+      // Determina a ordem dos jogadores
+      se(vencedor_anterior == jogador1menu) {
+        jogada_jogador1()
+        jogada_jogador2()
+      } senao {
+        jogada_jogador2()
+        jogada_jogador1()
+      }
 
       // Resultado da rodada
       vitoria_da_mao()
@@ -78,17 +78,36 @@ funcao inicio() {
     escreva("Pontuação do Jogador 1: ", pontos_jogador1, "\n")
     escreva("Pontuação do Jogador 2: ", pontos_jogador2, "\n")
     se(pontos_jogador1 > pontos_jogador2) {
-      escreva("VITÓRIA FINAL! JOGADOR 1")
+      escreva("VITÓRIA FINAL! JOGADOR 1\n","jogo finalizado")
     } senao se(pontos_jogador2 > pontos_jogador1) {
-      escreva("VITÓRIA FINAL! JOGADOR 2")
+      escreva("VITÓRIA FINAL! JOGADOR 2\n","jogo finalizado")
     } senao {
-      escreva("EMPATE FINAL")
+      escreva("EMPATE FINAL","jogo finalizado")
     }
 
   } senao {
     escreva("jogo finalizado")
     leia(jogofinalizado)
   }
+  }
+}
+
+funcao jogada_jogador1() {
+  escreva("VEJA SUAS CARTAS: JOGADOR 1\n","\n JOGADOR 1:\n", jogador1menu, "\n")
+  mostra_carta_para_jogadores(jogador1)
+  escreva("QUAL VOCÊ DESEJA JOGAR: ")
+  leia(jogada)
+  encontra_pontuacao_da_carta(jogador1)
+  verifica_jogada_1(jogador1)
+}
+
+funcao jogada_jogador2() {
+  escreva("\n\nVEJA SUAS CARTAS: JOGADOR 2\n","\n JOGADOR 2:\n", jogador2menu, "\n")
+  mostra_carta_para_jogadores(jogador2)
+  escreva("QUAL VOCÊ DESEJA JOGAR: ")
+  leia(jogada)
+  encontra_pontuacao_da_carta(jogador2)
+  verifica_jogada_2(jogador2)
 }
 
 funcao cadeia entrega_tres_cartas(cadeia vetor[]){
@@ -113,12 +132,14 @@ funcao reseta_cartas(){
 
 funcao vitoria_da_mao(){
   se(carta_escolhida_1 > carta_escolhida_2){
-    escreva("\n\nVITÓRIA DA RODADA! JOGADOR 1")
+    escreva("\n\nVITÓRIA DA RODADA!:\n",jogador1menu)
     pontos_jogador1++
+    vencedor_anterior = jogador1menu
   }
   senao se(carta_escolhida_2 > carta_escolhida_1){
-    escreva("\n\nVITÓRIA DA RODADA! JOGADOR 2")
+    escreva("\n\nVITÓRIA DA RODADA!:\n",jogador2menu)
     pontos_jogador2++
+    vencedor_anterior = jogador2menu
   }
   senao{
     escreva("\n\nEMPATE NA RODADA")
@@ -173,11 +194,10 @@ funcao verifica_jogada_2(cadeia jogador[]){
     jogador[1] = " "
   }
   se(jogada == 3){
-    escreva(jogador[2], " --> ", pontuacao_das_cartas[acha_posicao], " PONTOS")
+    escreva(jogador[2], " --> ", pontuacao_das_cartas[acha_posicao], " PONTOS")182183184185186187188189190191192193194195196197198199$0
     carta_escolhida_2 = pontuacao_das_cartas[acha_posicao]
     jogador[2] = " "
   }
 }
-    
-  }
+}
 
