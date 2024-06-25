@@ -1,6 +1,5 @@
 programa {
   inclua biblioteca Util --> u
-  inteiro contador = 0
   cadeia jogador1[3]
   cadeia jogador2[3]
 
@@ -9,11 +8,14 @@ programa {
   cadeia jogador2menu
   cadeia jogofinalizado
 
+  inteiro num_de_maos = 3
   inteiro jogada = 0
   inteiro acha_posicao = 0
  
   inteiro carta_escolhida_1 = 0
   inteiro carta_escolhida_2 = 0
+
+  cadeia vencedor_anterior = ""
 
   logico uso_da_carta[40]
 
@@ -42,18 +44,18 @@ programa {
 
 
   }
-  funcao cadeia entrega_tres_cartas(cadeia vetor[]){
+  funcao cadeia entrega_tres_cartas(cadeia jogador[]){
     inteiro carta_sorteada
-    para(contador = 0; contador < 3; contador){
+    para(inteiro contador = 0; contador < 3; contador){
       carta_sorteada = u.sorteia(0, 39)
       se(uso_da_carta[carta_sorteada] == verdadeiro){
       }senao{
-          vetor[contador] = nome_de_cartas[carta_sorteada]
+          jogador[contador] = nome_de_cartas[carta_sorteada]
           contador++
           uso_da_carta[carta_sorteada] = verdadeiro
         }  
       }
-    retorne vetor
+    retorne jogador
   }
 
   funcao reseta_cartas(){
@@ -66,15 +68,17 @@ programa {
 
   funcao vitoria_da_mao(){
     se(carta_escolhida_1 > carta_escolhida_2){
-      escreva("\n\nVITÓRIA! PLAYER 01")
+      escreva("\n\n[[[ VITÓRIA! JOGADOR 01 (", jogador1menu,") ]]]\n")
       pontos_jogador1++
+      vencedor_anterior = jogador1menu
     }
     senao se(carta_escolhida_2 > carta_escolhida_1){
-      escreva("\n\nVITÓRIA! PLAYER 02")
+      escreva("\n\n[[[ VITÓRIA! JOGADOR 02 (", jogador2menu,") ]]]\n")
       pontos_jogador2++
+      vencedor_anterior = jogador2menu
     }
     senao{
-      escreva("\n\nEMPATE")
+      escreva("\n\n[[[ EMPATE ]]]")
     }
   }
 
@@ -128,14 +132,20 @@ programa {
 
   funcao menu(){
     escreva("::::::::: MENU :::::::::\n")
-    escreva("OLÁ!!!\n","SEJA BEM-VINDO AO NOSSO JOGO\n", "[S] - Sim ou [N] - Não\n","DESEJA INICIAR O JOGO? ")
+    escreva("OLÁ!!!\n","SEJA BEM-VINDO AO NOSSO JOGO\n", "[1] - INICIAR\n[2] - FINALIZAR JOGO\n[3] - VER REGRAS\n","DESEJA INICIAR O JOGO: ")
     leia(opcao)
+    enquanto(opcao != 1 e opcao != 2 e opcao != 3){
+      escreva("OPS! VOCÊ ESCOLHEU UMA OPÇÃO INVÁLIDA\n")
+      escreva("[1] - INICIAR JOGO\n[2] - FINALIZAR JOGO\n[3] - VER REGRAS\n")
+      escreva("DIGITE NOVAMENTE: ")
+      leia(opcao)
+   }
   }
 
   funcao placar_atual(){
-    escreva("\n__ACOMPANHE O PLACAR DO JOGO__\n")
-    escreva("JOGADOR 01: ", contador_vitoria_mao_jog_1)
-    escreva("\nJOGADOR 02: ", contador_vitoria_mao_jog_2)
+    escreva("\n\n/////////// ACOMPANHE O PLACAR DO JOGO ///////////\n")
+    escreva("JOGADOR 01 (" , jogador1menu, "): ", contador_vitoria_mao_jog_1)
+    escreva("\t\t\t\t\t\t\t\tJOGADOR 02 (" , jogador2menu, "): ", contador_vitoria_mao_jog_2, "\n")
   }
 
   funcao verificar_erro(cadeia jogador[]){
@@ -153,64 +163,173 @@ programa {
     }
   }
 
-  funcao fluxo_do_jogo(){
-    inteiro mao = 0
-    se(opcao == "sim" ou opcao == "s"){
-    limpa()
-    escreva("--> ÓTIMO! INSIRA OS JOGADORES <--\n")
-    escreva("DIGITE O NOME DO 1º JOGADOR: ")
-    leia(jogador1menu)
-    escreva("DIGITE O NOME DO 2º JOGADOR: ")
-    leia(jogador2menu)
+  funcao jogada_jogador1(){
+    escreva("\nVEJA SUAS CARTAS: JOGADOR 01 (", jogador1menu, ")\n")
+    mostra_carta_para_jogadores(jogador1)
+    escreva("QUAL VOCÊ DESEJA JOGAR: ")
+    leia(jogada)
+    verificar_erro(jogador1)
+    encontra_pontuacao_da_carta(jogador1)
+    verifica_jogada(jogador1, verdadeiro)
+  }
 
-    escreva("\nPLAYER 01: ", jogador1menu, "\nPLAYER 02: ", jogador2menu, "\n")
-    faca{
-      mao++
-      escreva("\n-------- VAMO INCIAR A: ", mao, "ª MÃO ---------")
-      entrega_tres_cartas(jogador1)
-      entrega_tres_cartas(jogador2)
-      para(inteiro rodada = 1; rodada < 4; rodada++) {
-        escreva("\n\n:::: JOGADA ", rodada, " :::::\n")
-        escreva("VEJA SUAS CARTAS: ", jogador1menu, "\n")
-        
-        mostra_carta_para_jogadores(jogador1)
-        escreva("QUAL VOCÊ DESEJA JOGAR: ")
-        leia(jogada)
-        verificar_erro(jogador1)
-        encontra_pontuacao_da_carta(jogador1)
-        verifica_jogada(jogador1, verdadeiro)
+  funcao jogada_jogador2(){
+    escreva("\nVEJA SUAS CARTAS: JOGADOR 02 (", jogador2menu, ")\n")    
+    mostra_carta_para_jogadores(jogador2)
+    escreva("QUAL VOCÊ DESEJA JOGAR: ")
+    leia(jogada)
+    verificar_erro(jogador2)
+    encontra_pontuacao_da_carta(jogador2)
+    verifica_jogada(jogador2, falso)
+  }
 
-        // Jogador 2
-        escreva("\n\nVEJA SUAS CARTAS: ", jogador2menu, "\n")
-        
-        mostra_carta_para_jogadores(jogador2)
-        escreva("QUAL VOCÊ DESEJA JOGAR: ")
-        leia(jogada)
-        verificar_erro(jogador2)
-        encontra_pontuacao_da_carta(jogador2)
-        verifica_jogada(jogador2, falso)
+  funcao mostra_regras(){
+  escreva("\n\n--------------------------------------------------\n")
+  escreva("              REGRAS DO TRUCO GAÚCHO             \n")
+  escreva("--------------------------------------------------\n\n")
+  escreva("Objetivo: Ser o primeiro a atingir 24 pontos.\n\n")
+  escreva("Cartas (da mais forte para a mais fraca):\n\n")
+  
+  escreva("Paus:\n")
+  escreva("1 de Paus (Espadilha) - 39 pontos\n")
+  escreva("2 de Paus - 36 pontos\n")
+  escreva("3 de Paus (Zap) - 37 pontos\n")
+  escreva("4 de Paus - 28 pontos\n")
+  escreva("5 de Paus - 29 pontos\n")
+  escreva("6 de Paus - 30 pontos\n")
+  escreva("7 de Paus - 31 pontos\n")
+  escreva("11 de Paus - 32 pontos\n")
+  escreva("12 de Paus - 33 pontos\n")
+  escreva("13 de Paus - 34 pontos\n\n")
+  
+  escreva("Copa:\n")
+  escreva("1 de Copa - 35 pontos\n")
+  escreva("2 de Copa - 36 pontos\n")
+  escreva("3 de Copa - 37 pontos\n")
+  escreva("4 de Copa - 28 pontos\n")
+  escreva("5 de Copa - 29 pontos\n")
+  escreva("6 de Copa - 30 pontos\n")
+  escreva("7 de Copa - 31 pontos\n")
+  escreva("11 de Copa - 32 pontos\n")
+  escreva("12 de Copa - 33 pontos\n")
+  escreva("13 de Copa - 34 pontos\n\n")
+  
+  escreva("Espada:\n")
+  escreva("1 de Espada (Espadilha) - 40 pontos\n")
+  escreva("2 de Espada - 36 pontos\n")
+  escreva("3 de Espada - 37 pontos\n")
+  escreva("4 de Espada - 28 pontos\n")
+  escreva("5 de Espada - 29 pontos\n")
+  escreva("6 de Espada - 30 pontos\n")
+  escreva("7 de Espada - 38 pontos\n") 
+  escreva("11 de Espada - 32 pontos\n")
+  escreva("12 de Espada - 33 pontos\n")
+  escreva("13 de Espada - 34 pontos\n\n")
+  
+  escreva("Ouro:\n")
+  escreva("1 de Ouro - 35 pontos\n")
+  escreva("2 de Ouro - 36 pontos\n")
+  escreva("3 de Ouro - 37 pontos\n")
+  escreva("4 de Ouro - 28 pontos\n")
+  escreva("5 de Ouro - 29 pontos\n")
+  escreva("6 de Ouro - 30 pontos\n")
+  escreva("7 de Ouro - 37 pontos\n")
+  escreva("11 de Ouro - 32 pontos\n")
+  escreva("12 de Ouro - 33 pontos\n")
+  escreva("13 de Ouro - 34 pontos\n\n")
+  
+  escreva("Distribuição de Cartas:\n")
+  escreva("Cada jogador recebe 3 cartas no início de cada rodada.\n\n")
+  
+  escreva("Rodadas:\n")
+  escreva("O jogo tem 3 rodadas. Quem vencer 2 rodadas ganha 1 ponto.\n\n")
+  }
 
-        // Resultado da rodada
-        vitoria_da_mao()
-      }
-      // Resultado final do jogo
-      escreva("\n\n:::: RESULTADO FINAL :::::\n")
+  funcao mostra_resultado_final(){
+    escreva("\n\n=============== RESULTADO DA MÃO =================\n")
       escreva("Pontuação do Jogador 1: ", pontos_jogador1, "\n")
       escreva("Pontuação do Jogador 2: ", pontos_jogador2, "\n")
       se(pontos_jogador1 > pontos_jogador2) {
-        escreva("VITÓRIA DA MÃO! JOGADOR 1")
+        escreva("+1+1+1+1+ VITÓRIA DA MÃO! JOGADOR 1 (", jogador1menu, ") +1+1+1+1+")
         contador_vitoria_mao_jog_1++
       } senao se(pontos_jogador2 > pontos_jogador1) {
-        escreva("VITÓRIA DA MÃO! JOGADOR 2")
+        escreva("+2+2+2+2+ VITÓRIA DA MÃO! JOGADOR 2 (", jogador2menu, ") +2+2+2+2+")
         contador_vitoria_mao_jog_2++
       } senao {
-        escreva("EMPATE FINAL")
+        escreva("-1-2-1-2-1-2-1-2-1- EMPATE FINAL -1-2-1-2-1-2-1-2-1-")
       }
-      placar_atual()
-      reseta_cartas()
-    }enquanto(contador_vitoria_mao_jog_1 < 3 e contador_vitoria_mao_jog_2 < 3) 
-  
-    escreva("\n\nJOGO FINALIZADO")
+  }
+
+  funcao fluxo_do_jogo(){
+  enquanto(opcao == "1" ou opcao == "3"){
+    se(opcao == "1"){
+      inteiro mao = 0
+      contador_vitoria_mao_jog_1 = 0
+      contador_vitoria_mao_jog_2 = 0
+      limpa()
+      escreva("--> ÓTIMO! INSIRA OS JOGADORES <--\n")
+      escreva("DIGITE O NOME DO 1º JOGADOR: ")
+      leia(jogador1menu)
+      escreva("DIGITE O NOME DO 2º JOGADOR: ")
+      leia(jogador2menu)
+      vencedor_anterior = jogador1menu
+      escreva("\nJOGADOR 01: ", jogador1menu, "\nJOGADOR 02: ", jogador2menu, "\n")
+      faca{
+        mao++
+        escreva("\n--------------------------------------------------")
+        escreva("\n             VAMO INCIAR A: ", mao, "ª MÃO          ")
+        escreva("\n--------------------------------------------------") 
+        entrega_tres_cartas(jogador1)
+        entrega_tres_cartas(jogador2)
+        para(inteiro rodada = 1; rodada < 4; rodada++) {
+          escreva("\n____________________ JOGADA ", rodada, " ____________________\n")
+          se(vencedor_anterior == jogador1menu){
+          jogada_jogador1()
+          escreva("\n")
+          jogada_jogador2()
+          }senao{
+          jogada_jogador2()
+          escreva("\n")
+          jogada_jogador1()
+          }
+          // Resultado da rodada
+          vitoria_da_mao()
+          se(pontos_jogador1 == 2){
+            pare
+          }
+          se(pontos_jogador2 == 2){
+            pare
+          }
+        }
+        // Resultado final do jogo
+        limpa()
+        mostra_resultado_final()
+        placar_atual()
+        reseta_cartas()
+      }enquanto(contador_vitoria_mao_jog_1 < num_de_maos e contador_vitoria_mao_jog_2 < num_de_maos) 
+      se(contador_vitoria_mao_jog_1 > contador_vitoria_mao_jog_2){
+        escreva("\nPARABÉNS!!! ", jogador1menu)
+      }
+      senao{
+        escreva("\nPARABÉNS!!! ", jogador2menu)
+      }
+      escreva("\n\nJOGO FINALIZADO\n\n")
+    }
+    se(opcao == "3"){
+      mostra_regras()
+    }
+    se(opcao == "2"){
+      pare
+    }
+      escreva("[1] - INICIAR OUTRO JOGO\n[2] - TERMINAR\n[3] - VER REGRAS\n")
+      escreva("DESEJA INICIAR UM NOVO JOGO: ")
+      leia(opcao)
+      enquanto(opcao != "1" e opcao != "2" e opcao != "3"){
+        escreva("OPS! VOCÊ ESCOLHEU UMA OPÇÃO INVÁLIDA\n")
+        escreva("[1] - INICIAR JOGO\n[2] - FINALIZAR JOGO\n[3] - VER REGRAS\n")
+        escreva("DIGITE NOVAMENTE: ")
+        leia(opcao)
+      }
     }
   }
 }
