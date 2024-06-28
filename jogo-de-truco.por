@@ -58,7 +58,7 @@ programa {
         para(inteiro rodada = 1; rodada < 4; rodada++) {
           escreva("\n____________________ JOGADA ", rodada, " ____________________\n")
           // Determina ordem de vitória
-          verifica_ordem_jogadores()
+          verifica_ordem_jogadores(rodada)
           // Resultado da rodada
           vitoria_da_mao()
           // Jogador == 2pontos - Fim de rodada
@@ -70,15 +70,11 @@ programa {
           }
         }
         // Resultado final do jogo
-        limpa()
         mostra_resultado_final()
         placar_atual()
         reseta_cartas()
       }enquanto(contador_vitoria_mao_jog_1 < num_de_maos e contador_vitoria_mao_jog_2 < num_de_maos)
       exibe_vencedor() 
-    }
-    se(opcao == "3"){
-      mostra_regras()
     }
     se(opcao == "2"){
       limpa()
@@ -87,27 +83,32 @@ programa {
       escreva("\n-----------------------")
       pare
     }
+    se(opcao == "3"){
+      mostra_regras()
+    }
       escreva("[1] - INICIAR\n[2] - FINALIZAR JOGO\n[3] - VER REGRAS\n","DIGITE A OPÇÃO: ")
       leia(opcao)
       verificar_erro_opcao(opcao)
     }
   }
+
   funcao entrega_tres_cartas(cadeia jogador[]){
     inteiro carta_sorteada
     para(inteiro contador = 0; contador < 3; contador){ // Contador somado quando há uma carta diponível
       carta_sorteada = u.sorteia(0, 39)
       se(uso_da_carta[carta_sorteada] == verdadeiro){
-      }senao{
+      }
+      senao{
         jogador[contador] = nome_de_cartas[carta_sorteada]
         contador++
         uso_da_carta[carta_sorteada] = verdadeiro
-      }  
+      }
     }
   }
 
-  funcao verifica_ordem_jogadores(){
+  funcao verifica_ordem_jogadores(inteiro rodada){
     inteiro aleatorio
-    se(mao == 1){
+    se(mao == 1 e rodada == 1){
       aleatorio = u.sorteia(1, 2)
       se(aleatorio == 1){
         jogada_jogador1()
@@ -173,18 +174,19 @@ programa {
         escreva("[",i + 1,"] ", jogador[i], "\n")
       }
     }
+
   }
 
   funcao exibe_vencedor(){
     se(contador_vitoria_mao_jog_1 > contador_vitoria_mao_jog_2){
-      escreva("____________________________")
-      escreva("\n\nPARABÉNS!!! ", t.caixa_alta(jogador1menu))
-      escreva("\n____________________________")
+      escreva("\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+      escreva("\n          PARABÉNS!!! ", t.caixa_alta(jogador1menu))
+      escreva("\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
      }
     senao{
-      escreva("____________________________")
-      escreva("\n\nPARABÉNS!!! ", t.caixa_alta(jogador2menu))
-      escreva("\n____________________________")
+      escreva("\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+      escreva("\n          PARABÉNS!!! ", t.caixa_alta(jogador2menu))
+      escreva("\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
     }
     escreva("\n\nJOGO FINALIZADO\n\n")
   }
@@ -197,34 +199,14 @@ programa {
     }
   }
 
-  funcao verifica_jogada(cadeia jogador[], logico carta_escolhida){
-    se(jogada == 1){
-      escreva(jogador[0], " --> ", pontuacao_das_cartas[acha_posicao], " PONTOS")
-      se(carta_escolhida){
-        carta_escolhida_1 = pontuacao_das_cartas[acha_posicao]
-      }senao{
-        carta_escolhida_2 = pontuacao_das_cartas[acha_posicao]
-      }
-      jogador[0] = " "
+  funcao verifica_jogada(cadeia jogador[], inteiro jogada, logico carta_escolhida){
+    escreva(jogador[jogada - 1], " --> ", pontuacao_das_cartas[acha_posicao], " PONTOS")
+    se(carta_escolhida){
+      carta_escolhida_1 = pontuacao_das_cartas[acha_posicao]
+    }senao{
+      carta_escolhida_2 = pontuacao_das_cartas[acha_posicao]
     }
-    se(jogada == 2){
-      escreva(jogador[1], " --> ", pontuacao_das_cartas[acha_posicao], " PONTOS")
-      se(carta_escolhida){
-        carta_escolhida_1 = pontuacao_das_cartas[acha_posicao]
-      }senao{
-        carta_escolhida_2 = pontuacao_das_cartas[acha_posicao]
-      }
-      jogador[1] = " "
-    }
-    se(jogada == 3){
-      escreva(jogador[2], " --> ", pontuacao_das_cartas[acha_posicao], " PONTOS")
-      se(carta_escolhida){
-        carta_escolhida_1 = pontuacao_das_cartas[acha_posicao]
-      }senao{
-        carta_escolhida_2 = pontuacao_das_cartas[acha_posicao]
-      }
-      jogador[2] = " "
-    }
+    jogador[jogada - 1] = " "
   }
 
   funcao menu(){
@@ -274,7 +256,7 @@ programa {
     leia(jogada)
     verificar_erro_jogada(jogador1)
     encontra_pontuacao_da_carta(jogador1)
-    verifica_jogada(jogador1, verdadeiro)
+    verifica_jogada(jogador1, jogada, verdadeiro)
   }
 
   funcao jogada_jogador2(){
@@ -284,7 +266,7 @@ programa {
     leia(jogada)
     verificar_erro_jogada(jogador2)
     encontra_pontuacao_da_carta(jogador2)
-    verifica_jogada(jogador2, falso)
+    verifica_jogada(jogador2, jogada, falso)
   }
 
   funcao mostra_regras(){
