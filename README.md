@@ -48,7 +48,6 @@ O jogo segue as regras tradicionais do Truco Gaúcho, com algumas adaptações p
 ### Considerações Finais
 
 Este jogo é um projeto inicial e ainda está em desenvolvimento. Novas funcionalidades e melhorias podem ser implementadas no futuro como:
-* Possibilidade de jogar contra o computador.
 * Regras mais parecidas com a vida real.
 * Aparecer a carta do baralho não só o número e a nome da carta.
 
