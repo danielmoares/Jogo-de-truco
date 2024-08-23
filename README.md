@@ -51,6 +51,4 @@ Este jogo é um projeto inicial e ainda está em desenvolvimento. Novas funciona
 * Regras mais parecidas com a vida real.
 * Aparecer a carta do baralho não só o número e a nome da carta.
 
-Se gostou deixe uma **estrelinha** para o projeto⭐
-
 Espero que você se divirta jogando Truco Gaúcho em Portugol Web Studio!
